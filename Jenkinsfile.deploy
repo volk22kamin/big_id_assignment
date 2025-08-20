@@ -6,7 +6,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to build from'),
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to build from')
         choice(name: 'APP_TO_DEPLOY', choices: ['client', 'server', 'mongodb'], description: 'Select which app to deploy')
     }
 
