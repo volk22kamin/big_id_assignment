@@ -129,4 +129,28 @@ Adjust namespace/name if your Jenkins ServiceAccount differs.
 - After deploying the server, copy the Service IP and paste it into the client values as the API URL so the client points to the server.
   - (A better approach is to use a DNS name for the server to keep a stable endpoint for the client, but to avoid costs this setup uses the raw IP.)
 
+### MongoDB StatefulSet with Persistent Storage
+The Helm chart automatically creates a StatefulSet for MongoDB when `statefulset.enabled: true` is set in `todo-app/mongodb-values.yaml`. This provides:
 
+- **Persistent storage** using `do-block-storage-retain` (10Gi)
+- **Stable network identity** with predictable DNS names
+- **Data retention** - storage survives pod restarts and deletions
+- **Ordered operations** for deployment and scaling
+
+**Configuration in `todo-app/mongodb-values.yaml`:**
+```yaml
+statefulset:
+  enabled: true
+
+persistence:
+  enabled: true
+  storageClass: do-block-storage-retain
+  size: 10Gi
+  mountPath: /data/db
+```
+
+The chart automatically:
+- Creates a StatefulSet instead of Deployment for MongoDB
+- Sets up persistent volume claims with the specified storage class
+- Mounts the persistent volume to `/data/db`
+- Maintains the same service endpoints for client/server connectivity

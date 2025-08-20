@@ -12,6 +12,23 @@ container:
   port:
     name: http 
 
+statefulset:
+  enabled: true
+
+persistence:
+  enabled: true
+  storageClass: do-block-storage-retain
+  size: 10Gi
+  mountPath: /data/db
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
 strategy: null
 
 readinessProbe: null

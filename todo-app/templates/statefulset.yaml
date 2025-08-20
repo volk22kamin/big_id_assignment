@@ -1,22 +1,18 @@
-{{- if not (and (eq .Values.appName "todo-app-db") (.Values.statefulset.enabled)) }}
+{{- if and (eq .Values.appName "todo-app-db") (.Values.statefulset.enabled) }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ .Values.appName }}-{{ .Values.environment }}
   namespace: {{ .Values.namespace }}
   labels:
     app: {{ .Values.appName }}-{{ .Values.environment }}
 spec:
-  {{- if not .Values.hpa }}
+  serviceName: {{ .Values.appName }}-{{ .Values.environment }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
-  {{- if .Values.strategy}}
-  strategy:
+  updateStrategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge | default "1" }}
-      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable | default "0" }}
-  {{- end }}
+      partition: 0
   selector:
     matchLabels:
       appName: {{ .Values.selector.appName }}-{{ .Values.environment }}
@@ -31,22 +27,6 @@ spec:
       containers:
         - name: {{ .Values.appName }}-{{ .Values.environment }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- with .Values.command }}
-          {{- with .command }}
-          command: {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .args }}
-          args: {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
-          readinessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ .Values.service.portName }}
@@ -54,19 +34,9 @@ spec:
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.env }}
-          {{- with .variables }}
-          env:
-          {{- range . }}
-          - name: {{ .name }}
-            {{- if hasKey . "valueFrom" }}
-            valueFrom:
-              {{- toYaml .valueFrom | nindent 14 }}
-            {{- else }}
-            value: {{ .value | quote }}
-            {{- end }}
-          {{- end }}
-          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- if .Values.resources }}
           resources:
@@ -89,4 +59,22 @@ spec:
               {{- end }}
             {{- end }}
           {{- end }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.persistence.storageClass }}
+        storageClassName: {{ .Values.persistence.storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- end }}
 {{- end }}
