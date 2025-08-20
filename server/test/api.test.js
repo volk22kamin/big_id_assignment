@@ -40,7 +40,7 @@ describe('Todo API Tests', () => {
             const res = await chai.request(app)
                 .get('/api/v2/todos');
 
-            res.should.have.status(201);
+            res.should.have.status(200);
             res.body.should.be.an('array');
             res.body.should.have.lengthOf(1);
             res.body[0].should.have.property('text').eql('Test todo');
