@@ -16,7 +16,7 @@ pipeline {
                 script {
                     container("k8s-tools") {
                         dir("todo-app") {
-                            sh "helm upgrade --install todo-app ${params.APP_TO_DEPLOY} --values ./todo-app/${params.APP_TO_DEPLOY}-values.yaml"
+                            sh "helm upgrade --install -n todo ${params.APP_TO_DEPLOY} todo-app/ --values ./todo-app/${params.APP_TO_DEPLOY}-values.yaml"
                         }
                     }
                 }
