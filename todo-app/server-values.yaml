@@ -35,13 +35,13 @@ service:
   type: NodePort
   nodePort: 30829
 
-env: 
-  variables:
-  - name: MONGODB_URI
-    valueFrom:
-      secretKeyRef:
-        name: mongo-app
-        key: MONGODB_URI
+env: null
+  # variables:
+  # - name: MONGODB_URI
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mongo-app
+  #       key: MONGODB_URI
 
 
 
