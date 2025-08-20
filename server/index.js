@@ -29,7 +29,6 @@ mongoose.connection.once('open', async () => {
 
 
 app.use('/api/v2/todos', todoRoutesV2);
-app.use('/api/todos', todoRoutesV2);
 
 app.get('/health', (req, res) => {
     res.status(200).send('OK');
