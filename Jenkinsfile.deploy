@@ -6,7 +6,6 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to build from')
         choice(name: 'APP_TO_DEPLOY', choices: ['client', 'server', 'mongodb'], description: 'Select which app to deploy')
     }
 
@@ -16,7 +15,7 @@ pipeline {
                 script {
                     container("k8s-tools") {
                         dir("todo-app") {
-                            sh "helm upgrade --install -n todo ${params.APP_TO_DEPLOY} . --values ./${params.APP_TO_DEPLOY}-values.yaml"
+                            sh "helm upgrade --install -n todo ${params.APP_TO_DEPLOY} . --values values.yaml --values ./${params.APP_TO_DEPLOY}-values.yaml"
                             
                         }
                     }

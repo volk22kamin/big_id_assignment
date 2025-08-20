@@ -1,0 +1,9 @@
+namespace: todo
+imagePullSecret: dockerhub-creds
+environment: green
+strategy:
+  enabled: true
+updateStrategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0

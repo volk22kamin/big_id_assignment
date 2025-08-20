@@ -43,8 +43,6 @@ spec:
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           {{- end }}
-
-
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ .Values.service.portName }}

@@ -1,5 +1,4 @@
 replicaCount: 1
-namespace: todo
 appName: todo-app-db
 
 image:
@@ -31,7 +30,6 @@ env:
 command:
   enabled: false
   
-environment: green
 
 networkPolicy:
   enabled: true
@@ -44,7 +42,6 @@ networkPolicy:
     - key: appName
       value: todo-app-server
 
-imagePullSecret: dockerhub-creds
 
 ingress:
   enabled: false

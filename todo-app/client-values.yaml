@@ -1,8 +1,6 @@
 replicaCount: 1
-namespace: todo
 appName: todo-app-client
 
-imagePullSecret: dockerhub-creds
 
 image:
   repository: volk22kaimn/todo-app-client
@@ -15,12 +13,7 @@ container:
   port:
     name: http 
 
-strategy:
-  enabled: true
-updateStrategy:
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 0
+
 
 service:
   portName: todo-client
@@ -59,18 +52,11 @@ command:
     - |
       echo "window._env_ = { API_URL: \"${API_URL}\" };" > /usr/share/nginx/html/config.js && exec nginx -g 'daemon off;'
 
-
-environment: green
-
 networkPolicy:
   enabled: false
 
 ingress:
   enabled: false
-  name: to-do-ingress
-  host: "volk.todo.org"
-  path: /
-  serviceName: todo-app-client
 
 hpa:
   cpuUtilization: 70
