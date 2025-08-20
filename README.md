@@ -32,6 +32,17 @@ Chart path: `todo-app/`
 - **Egress control**: limit outbound traffic to required services (e.g., DB)
 - **Least privilege**: reduce lateral movement and blast radius
 
+### Kubernetes prerequisites
+- **Image pull secret (Docker Hub)**: The chart references `imagePullSecret: dockerhub-creds` and default namespace `todo` (see `todo-app/values.yaml`). Create the secret in each target namespace before deploying:
+
+```bash
+kubectl -n todo create secret docker-registry dockerhub-creds \
+  --docker-username=DOCKERHUB_USERNAME \
+  --docker-password=DOCKERHUB_PASSWORD \
+  --docker-email=YOUR_EMAIL \
+  --docker-server=https://index.docker.io/v1/
+```
+
 ### Build and Deploy with Helm
 Namespace (example): `todo`
 
@@ -87,6 +98,17 @@ helm install my-jenkins jenkinsci/jenkins --version 5.8.79 -f my-jenkins-values.
 ```
 
 The custom values file configures the required Kubernetes pod templates (Kaniko, Node, k8s-tools) for the pipelines.
+
+### Jenkins RBAC for kubectl (required)
+To run `kubectl` from Jenkins Pods using ServiceAccount `jenkins` in namespace `jenkins`, bind cluster-admin:
+
+```bash
+kubectl create clusterrolebinding jenkins-admin \
+  --clusterrole=cluster-admin \
+  --serviceaccount=jenkins:jenkins
+```
+
+Adjust namespace/name if your Jenkins ServiceAccount differs.
 
 ### Manual steps required
 - Image tags for deployment are set manually in the corresponding app values files (`todo-app/client-values.yaml`, `todo-app/server-values.yaml`, `todo-app/mongodb-values.yaml`).

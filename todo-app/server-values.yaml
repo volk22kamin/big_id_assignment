@@ -14,20 +14,20 @@ container:
     name: http 
 
 readinessProbe:
-  enabled: true
-  path: /health
-  port: 3000
+  httpGet:
+    path: /health
+    port: 3000
+    scheme: HTTP
   initialDelaySeconds: 5
   periodSeconds: 5
 
 livenessProbe:
-  enabled: true
-  type: httpGet
-  path: /health
-  port: 3000
+  httpGet:
+    path: /health
+    port: 3000
+    scheme: HTTP
   initialDelaySeconds: 10
   periodSeconds: 10
-
 
 service:
   portName: todo-server
@@ -36,17 +36,13 @@ service:
   nodePort: 30829
 
 env: 
-  enabled: true
   variables:
   - name: MONGODB_URI
     value: mongodb://todo-app-db-green:27017/todoapp
 
-command:
-  enabled: false
+command: null
 
-networkPolicy:
-  enabled: false
+networkPolicy: null
   
 
-ingress:
-  enabled: false
+ingress: null

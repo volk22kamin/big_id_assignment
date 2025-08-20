@@ -9,7 +9,7 @@ spec:
   {{- if not .Values.hpa }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
-  {{- if .Values.strategy.enabled}}
+  {{- if .Values.strategy}}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -30,42 +30,26 @@ spec:
       containers:
         - name: {{ .Values.appName }}-{{ .Values.environment }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- if .Values.command.enabled }}
-          command: {{- toYaml .Values.command.command | nindent 12 }}
-          args: {{- toYaml .Values.command.args | nindent 12 }}
+          {{- with .Values.command.command }}
+          command: {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.readinessProbe.enabled }}
+          {{- with .Values.command.args }}
+          args: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
           readinessProbe:
-            httpGet:
-              path: {{ .Values.readinessProbe.path }}
-              port: {{ .Values.readinessProbe.port }}
-              scheme: HTTP
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.livenessProbe.enabled }}
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- if or (not .Values.livenessProbe.type) (eq .Values.livenessProbe.type "httpGet") }}
-            httpGet:
-              path: {{ .Values.livenessProbe.path }}
-              port: {{ .Values.livenessProbe.port }}
-              scheme: HTTP
-            {{- else if eq .Values.livenessProbe.type "tcpSocket" }}
-            tcpSocket:
-              port: {{ .Values.livenessProbe.port }}
-            {{- else if eq .Values.livenessProbe.type "exec" }}
-            exec:
-              command: {{- toYaml .Values.livenessProbe.command | nindent 14 }}
-            {{- end }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ .Values.service.portName }}
-          {{- if .Values.env.enabled }}
+          {{- with .Values.env.variables }}
           env:
-          {{- range .Values.env.variables }}
+          {{- range . }}
           - name: {{ .name }}
             value: {{ .value | quote }}
           {{- end }}

@@ -30,41 +30,28 @@ resources:
     memory: "1Gi"
 
 env:
-  enabled: true
   variables:
     - name: API_URL
       value: "http://134.122.84.30:30829/api/v2"
 
-readinessProbe:
-  enabled: false
-  path: /health
-  port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 5
-
 livenessProbe:
-  enabled: true
-  type: httpGet
-  path: /
-  port: 80
+  httpGet:
+    path: /
+    port: 80
+    scheme: HTTP
   initialDelaySeconds: 10
   periodSeconds: 10
 
-
 command:
-  enabled: true
   command:
     - "/bin/sh"
   args:
     - "-c"
     - |
-      echo "window._env_ = { API_URL: \"${API_URL}\" };" > /usr/share/nginx/html/config.js && exec nginx -g 'daemon off;'
+      echo "window._env_ = { API_URL: \"${API_URL}\" } ;" > /usr/share/nginx/html/config.js && exec nginx -g 'daemon off;'
 
-networkPolicy:
-  enabled: false
-
-ingress:
-  enabled: false
+ingress: null
+networkPolicy: null
 
 hpa:
   cpuUtilization: 70
