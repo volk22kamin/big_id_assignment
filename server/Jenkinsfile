@@ -7,7 +7,6 @@ pipeline {
     }
 
     triggers { githubPush() }
-    options { timestamps() }
 
     stages {
         stage("client") {
