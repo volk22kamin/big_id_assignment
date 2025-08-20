@@ -1,0 +1,28 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'k8s-tools'
+        }
+    }
+
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to build from'),
+        choice(name: 'APP_TO_DEPLOY', choices: ['client', 'server', 'mongodb'], description: 'Select which app to deploy')
+    }
+
+    stages {
+        stage("Deploy") {
+            steps {
+                script {
+                    container("k8s-tools") {
+                        dir("todo-app") {
+                            sh "helm upgrade --install todo-app ${params.APP_TO_DEPLOY} --values ./todo-app/${params.APP_TO_DEPLOY}-values.yaml"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+}
