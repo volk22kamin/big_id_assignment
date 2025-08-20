@@ -44,7 +44,7 @@ networkPolicy:
     - key: appName
       value: todo-app-server
 
-imagePullSecret: dockerhub-cred
-  
+imagePullSecret: dockerhub-creds
+
 ingress:
   enabled: false
