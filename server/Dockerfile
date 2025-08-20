@@ -1,20 +1,16 @@
-# Use a specific Node.js version (e.g., 18)
-FROM node:18
-
-# Set the working directory
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json
+FROM node:18-alpine AS deps
+WORKDIR /app
 COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of your application code
-COPY . .
-
-# Expose the port your app runs on
+FROM node:18-alpine
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY ./*.json ./
+COPY ./index.js ./index.js
+COPY ./models ./models
+COPY ./routes ./routes
+USER node
 EXPOSE 3000
-
-# Command to run your app
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
