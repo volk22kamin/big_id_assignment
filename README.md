@@ -43,6 +43,20 @@ kubectl -n todo create secret docker-registry dockerhub-creds \
   --docker-server=https://index.docker.io/v1/
 ```
 
+- **MongoDB secrets (server connectivity)**: Create secrets to store MongoDB root credentials and the application connection URI. Replace placeholders with your values and adjust the DB Service name (`todo-app-db-green`) if your environment differs.
+
+```bash
+# MongoDB root user (used by the DB on first start)
+kubectl -n todo create secret generic mongo-root \
+  --from-literal=MONGO_INITDB_ROOT_USERNAME='<mongo_root_username>' \
+  --from-literal=MONGO_INITDB_ROOT_PASSWORD='<mongo_root_password>'
+
+# Application connection URI for the server
+kubectl -n todo create secret generic mongo-app \
+  --from-literal=MONGODB_URI='mongodb://<app_user>:<app_password>@todo-app-db-green:27017/todoapp?authSource=admin'
+```
+
+
 ### Build and Deploy with Helm
 Namespace (example): `todo`
 
