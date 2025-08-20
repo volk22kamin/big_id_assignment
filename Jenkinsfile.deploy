@@ -17,13 +17,7 @@ pipeline {
                     container("k8s-tools") {
                         dir("todo-app") {
                             sh "helm upgrade --install -n todo ${params.APP_TO_DEPLOY} . --values ./${params.APP_TO_DEPLOY}-values.yaml"
-                            if (params.APP_TO_DEPLOY == 'server') {
-                                def nodePort = sh(
-                                    script: "kubectl get svc todo-app-server-green -n todo -o jsonpath='{.spec.ports[?(@.type==\"NodePort\")].nodePort}'",
-                                    returnStdout: true
-                                ).trim()
-                                echo "NodePort for todo-app-server-green: ${nodePort}"
-                            }
+                            
                         }
                     }
                 }
