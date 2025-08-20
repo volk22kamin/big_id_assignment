@@ -39,7 +39,7 @@ env:
   enabled: true
   variables:
     - name: API_URL
-      value: "http://46.101.112.137:30829/api/v2"
+      value: "http://134.122.84.30:30829/api/v2/todos"
 
 readinessProbe:
   enabled: false
