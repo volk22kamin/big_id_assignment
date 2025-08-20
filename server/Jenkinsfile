@@ -12,7 +12,7 @@ pipeline {
         stage("client") {
             when {
                 beforeAgent true
-                changeset pattern: 'client/**', comparator: 'ANT'
+                changeset pattern: 'server/**', comparator: 'ANT'
             }
             stages {
                 stage("Test") {

@@ -160,7 +160,6 @@
             }
         }
 
-        // Delete todo
         async function deleteTodo(id) {
             try {
                 await fetch(`${API_URL}/todos/${id}`, {
@@ -172,7 +171,6 @@
             }
         }
 
-        // Render todos
         function renderTodos(todos) {
             const todoList = document.getElementById('todoList');
             todoList.innerHTML = '';
@@ -203,7 +201,6 @@
             });
         }
 
-        // Event listeners
         document.getElementById('todoForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const input = document.getElementById('todoInput');
