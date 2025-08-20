@@ -6,7 +6,7 @@ imagePullSecret: dockerhub-creds
 
 image:
   repository: volk22kaimn/todo-app-client
-  tag: "1.0.0"
+  tag: "1.0.1"
 
 selector:
   appName: todo-app-client
