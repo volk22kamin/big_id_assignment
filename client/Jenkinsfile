@@ -30,5 +30,13 @@ pipeline {
                 }
             }
         }
+        stage("Deploy") {
+            when {
+                env.BRANCH_NAME == 'main'
+            }
+            steps {
+                build job: 'CD', parameters: [string(name: 'BRANCH_NAME', value: 'main'), string(name: 'APP_TO_DEPLOY', value: 'client')]
+            }
+        }
     }
 }
