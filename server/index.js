@@ -1,4 +1,3 @@
-// app.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -9,15 +8,12 @@ import { Todo } from './models/Todo.js';
 
 export const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB URI
 const isTestEnv = process.env.NODE_ENV === 'test';
 const uri = process.env.MONGODB_URI || (isTestEnv ? 'mongodb://localhost:27017/todoapp_test' : 'mongodb://localhost:27017/todoapp');
 
-// Connect to MongoDB
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -32,7 +28,6 @@ mongoose.connection.once('open', async () => {
 });
 
 
-// Use routes
 app.use('/api/v2/todos', todoRoutesV2);
 app.use('/api/todos', todoRoutesV2);
 
@@ -40,7 +35,6 @@ app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
   
-// Start server
 if (process.env.NODE_ENV !== 'test') {
     const PORT = 3000;
     app.listen(PORT, () => {
