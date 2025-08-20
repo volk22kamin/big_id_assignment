@@ -1,0 +1,33 @@
+{
+  "name": "todo-app-server",
+  "version": "1.0.0",
+  "description": "A simple Todo application with Node.js, MongoDB and vanilla JavaScript",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "cross-env NODE_ENV=test mocha --exit"
+  },
+  "keywords": [
+    "todo",
+    "nodejs",
+    "mongodb",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.4.0",
+    "cross-env": "^7.0.3",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.0.0"
+  }
+}

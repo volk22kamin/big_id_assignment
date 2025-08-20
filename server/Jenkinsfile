@@ -1,0 +1,46 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'kaniko-git-mongo-node'
+            defaultContainer 'kaniko'
+        }
+    }
+
+    stages {
+        stage("Test") {
+            steps {
+                script {
+                    container("node") {
+                        dir("server") {
+                            sh "npm install"
+                            sh "npm test"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Build and Push') {
+            steps {
+                script {
+                    container('kaniko') {
+                        String tag = null
+                        dir('todo-app') {
+                            String valuesFile = 'server-values.yaml'
+                            def yaml = readYaml file: valuesFile
+                            tag = yaml.image.tag
+                        }
+                        if (tag != null) {
+                            sh """
+                                /kaniko/executor \
+                                --context=./server \
+                                --dockerfile=./server/Dockerfile \
+                                --destination=volk22kaimn/todo-app-server:${tag}
+                            """
+                            currentBuild.displayName = "Build #${env.BUILD_NUMBER} - tag: ${tag}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

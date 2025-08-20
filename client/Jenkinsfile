@@ -1,0 +1,48 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'kaniko-git'
+            defaultContainer 'kaniko'
+        }
+    }
+    
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'master', description: 'Git branch to build from')
+    }
+
+    stages {
+        stage('Clone') {
+            steps {
+                container('git') {
+                    cleanWs()
+                    sh """
+                      git clone -b ${params.BRANCH_NAME} https://github.com/volk22kamin/basicToDoApp.git .
+                  """
+                }
+            }
+        }
+        stage('Build and Push') {
+            steps {
+                script {
+                    container('kaniko') {
+                        String tag = null
+                        dir('basic-to-do-app') {
+                            String valuesFile = 'client-values.yaml'
+                            def yaml = readYaml file: valuesFile
+                            tag = yaml.image.tag
+                        }
+                        if (tag != null) {
+                            sh """
+                        /kaniko/executor \
+                        --context=./client \
+                        --dockerfile=./client/Dockerfile \
+                        --destination=volk22kaimn/basic-to-do-client:${tag}
+                    """
+                            currentBuild.displayName = "Build #${env.BUILD_NUMBER} - tag: ${tag}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

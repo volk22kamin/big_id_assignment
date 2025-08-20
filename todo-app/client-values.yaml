@@ -1,0 +1,75 @@
+replicaCount: 1
+namespace: todo
+appName: todo-app-client
+
+image:
+  repository: volk22kaimn/todo-app-client
+  tag: "3.1.v2"
+
+selector:
+  appName: todo-app-client
+ 
+container:
+  port:
+    name: http 
+
+strategy:
+  enabled: true
+updateStrategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+service:
+  portName: todo-client
+  port: 80
+  type: NodePort
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+env:
+  enabled: true
+  variables:
+    - name: API_URL
+      value: "http://46.101.112.137:30829/api/v2"
+
+readinessProbe:
+  enabled: false
+  path: /health
+  port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+
+command:
+  enabled: true
+  command:
+    - "/bin/sh"
+  args:
+    - "-c"
+    - |
+      echo "window._env_ = { API_URL: \"${API_URL}\" };" > /usr/share/nginx/html/config.js && exec nginx -g 'daemon off;'
+
+
+environment: green
+
+networkPolicy:
+  enabled: false
+
+ingress:
+  enabled: false
+  name: to-do-ingress
+  host: "volk.todo.org"
+  path: /
+  serviceName: todo-app-client
+
+hpa:
+  cpuUtilization: 70
+  minReplicas: 2
+  maxReplicas: 10

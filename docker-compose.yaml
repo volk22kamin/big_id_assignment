@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - mongodb
+    volumes:
+      - mongodb:/data/db  # Volume to persist MongoDB data
+
+  server:
+    image: volk22kaimn/basic-to-do-server:1.0.0
+    container_name: server
+    environment:
+      - MONGO_HOST=mongo
+    ports:
+      - "3000:3000"
+    networks:
+      - mongodb
+
+  client:
+    image: volk22kaimn/basic-to-do-client
+    container_name: client
+    ports:
+      - "80:80"
+    networks:
+      - mongodb
+
+networks:
+  mongodb:
+
+volumes:
+  mongodb:

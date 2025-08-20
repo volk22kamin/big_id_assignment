@@ -1,0 +1,56 @@
+replicaCount: 1
+namespace: todo
+appName: todo-app-server
+
+image:
+  repository: volk22kaimn/todo-app-server
+  tag: "1.0.0"
+
+selector:
+  appName: todo-app-server
+
+container:
+  port:
+    name: http 
+
+readinessProbe:
+  enabled: true
+  path: /health
+  port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+
+
+strategy:
+  enabled: true
+
+updateStrategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+
+service:
+  portName: todo-server
+  port: 3000
+  type: NodePort
+  nodePort: 30829
+
+env: 
+  enabled: true
+  variables:
+  - name: MONGODB_URI
+    value: mongodb://todo-app-db-green:27017/todoapp
+
+command:
+  enabled: false
+
+environment: green
+
+networkPolicy:
+  enabled: false
+  
+
+ingress:
+  enabled: false

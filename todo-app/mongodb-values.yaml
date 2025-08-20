@@ -1,0 +1,49 @@
+replicaCount: 1
+namespace: todo
+appName: todo-app-db
+
+image:
+  repository: mongo
+  tag: "latest"
+
+selector:
+  appName: todo-app-db
+
+container:
+  port:
+    name: http 
+
+
+strategy:
+  enabled: false
+
+readinessProbe:
+  enabled: false
+
+service:
+  portName: mongodb
+  port: 27017
+  type: ClusterIP
+
+env: 
+  enabled: false
+
+command:
+  enabled: false
+  
+environment: green
+
+networkPolicy:
+  enabled: true
+  name: mongodb-network-policy
+  namespace: todo
+  toPodLabels:
+    - key: appName
+      value: todo-app-db
+  fromPodLabels: 
+    - key: appName
+      value: todo-app-server
+
+
+ingress:
+  enabled: false

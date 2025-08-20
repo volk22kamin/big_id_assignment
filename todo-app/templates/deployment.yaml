@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-{{ .Values.environment }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}-{{ .Values.environment }}
+spec:
+  {{- if not .Values.hpa }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if .Values.strategy.enabled}}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge | default "1" }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable | default "0" }}
+  {{- end }}
+  selector:
+    matchLabels:
+      appName: {{ .Values.selector.appName }}-{{ .Values.environment }}
+  template:
+    metadata:
+      labels:
+        appName: {{ .Values.selector.appName }}-{{ .Values.environment }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ .Values.appName }}-{{ .Values.environment }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- if .Values.command.enabled }}
+          command: {{- toYaml .Values.command.command | nindent 12 }}
+          args: {{- toYaml .Values.command.args | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.readinessProbe.port }}
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          {{- end }}
+
+
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: {{ .Values.service.portName }}
+          {{- if .Values.env.enabled }}
+          env:
+          {{- range .Values.env.variables }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- if .Values.resources.requests }}
+            requests:
+              {{- if .Values.resources.requests.cpu }}
+              cpu: {{ .Values.resources.requests.cpu }}
+              {{- end }}
+              {{- if .Values.resources.requests.memory }}
+              memory: {{ .Values.resources.requests.memory }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.resources.limits }}
+            limits:
+              {{- if .Values.resources.limits.cpu }}
+              cpu: {{ .Values.resources.limits.cpu }}
+              {{- end }}
+              {{- if .Values.resources.limits.memory }}
+              memory: {{ .Values.resources.limits.memory }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
