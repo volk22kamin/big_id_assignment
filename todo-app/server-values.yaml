@@ -4,7 +4,7 @@ appName: todo-app-server
 
 image:
   repository: volk22kaimn/todo-app-server
-  tag: "1.0.1"
+  tag: "1.0.3"
 
 selector:
   appName: todo-app-server
