@@ -30,11 +30,13 @@ spec:
       containers:
         - name: {{ .Values.appName }}-{{ .Values.environment }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- with .Values.command.command }}
+          {{- with .Values.command }}
+          {{- with .command }}
           command: {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.command.args }}
+          {{- with .args }}
           args: {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- end }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
@@ -47,11 +49,13 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ .Values.service.portName }}
-          {{- with .Values.env.variables }}
+          {{- with .Values.env }}
+          {{- with .variables }}
           env:
           {{- range . }}
           - name: {{ .name }}
             value: {{ .value | quote }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.resources }}

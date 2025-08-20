@@ -40,7 +40,7 @@ env:
   - name: MONGODB_URI
     value: mongodb://todo-app-db-green:27017/todoapp
 
-command: null
+
 
 networkPolicy: null
   
