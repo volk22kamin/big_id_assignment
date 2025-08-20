@@ -26,6 +26,7 @@ service:
   portName: todo-client
   port: 80
   type: NodePort
+  nodePort: 32001
 
 resources:
   requests:
