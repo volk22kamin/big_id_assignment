@@ -24,6 +24,18 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            mail to: 'zeevdev22@gmail.com',
+                subject: "[SUCCESS] ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build OK: ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'zeevdev22@gmail.com',
+                subject: "[FAILURE] ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Failed: ${env.BUILD_URL}"
+        }
+    }
 
 
 }
