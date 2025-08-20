@@ -42,6 +42,14 @@ readinessProbe:
   initialDelaySeconds: 5
   periodSeconds: 5
 
+livenessProbe:
+  enabled: true
+  type: httpGet
+  path: /
+  port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
 
 command:
   enabled: true
