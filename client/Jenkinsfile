@@ -5,14 +5,9 @@ pipeline {
             defaultContainer 'kaniko'
         }
     }
-    
-    triggers { githubPush() }
-    
+        
     stages {
         stage('Build and Push') {
-            when {
-                changeset pattern: 'client/**', comparator: 'ANT'
-            }
             steps {
                 script {
                     container('kaniko') {
