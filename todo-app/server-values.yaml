@@ -2,6 +2,9 @@ replicaCount: 1
 namespace: todo
 appName: todo-app-server
 
+imagePullSecret: dockerhub-cred
+
+
 image:
   repository: volk22kaimn/todo-app-server
   tag: "1.0.1"

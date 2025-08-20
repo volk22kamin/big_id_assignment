@@ -25,6 +25,8 @@ spec:
         appName: {{ .Values.selector.appName }}-{{ .Values.environment }}
     spec:
       terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
       containers:
         - name: {{ .Values.appName }}-{{ .Values.environment }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
