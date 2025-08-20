@@ -23,7 +23,7 @@ Chart path: `todo-app/`
 ### Objects used
 - **Deployment**: app Pods
 - **Service**: Cluster networking for Pods
-- **Ingress**: HTTP routing to Services
+- **Ingress**: HTTP routing to Services (infra ready but not used here)
 - **HorizontalPodAutoscaler (HPA)**: autoscaling by CPU/memory
 - **NetworkPolicy**: traffic isolation and least-privilege networking
 
@@ -40,18 +40,18 @@ Install or upgrade per app using the base `values.yaml` and app-specific values 
 ```bash
 # Client
 helm upgrade --install -n todo client ./todo-app \
-  -f ./todo-app/values.yaml \
-  -f ./todo-app/client-values.yaml
+  --values ./todo-app/values.yaml \
+  --values ./todo-app/client-values.yaml
 
 # Server
 helm upgrade --install -n todo server ./todo-app \
-  -f ./todo-app/values.yaml \
-  -f ./todo-app/server-values.yaml
+  --values ./todo-app/values.yaml \
+  --values ./todo-app/server-values.yaml
 
 # MongoDB
 helm upgrade --install -n todo mongodb ./todo-app \
-  -f ./todo-app/values.yaml \
-  -f ./todo-app/mongodb-values.yaml
+  --values ./todo-app/values.yaml \
+  --values ./todo-app/mongodb-values.yaml
 ```
 
 Notes:
