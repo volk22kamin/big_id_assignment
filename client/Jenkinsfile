@@ -40,24 +40,15 @@ pipeline {
         }
     }
     post {
-    success {
-      emailext(
-        to: 'zeevdev22@gmail.com',
-        subject: "[SUCCESS] ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: """<p>Job: ${env.JOB_NAME} #${env.BUILD_NUMBER}</p>
-                 <p>Branch: ${env.GIT_BRANCH}</p>
-                 <p>Commit: ${env.GIT_COMMIT}</p>
-                 <p>URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
-        mimeType: 'text/html'
-      )
+        success {
+            mail to: 'zeevdev22@gmail.com',
+                subject: "[SUCCESS] ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build OK: ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'zeevdev22@gmail.com',
+                subject: "[FAILURE] ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Failed: ${env.BUILD_URL}"
+        }
     }
-    failure {
-      emailext(
-        to: 'zeevdev22@gmail.com',
-        subject: "[FAILURE] ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: """<p>FAILED. See <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
-        mimeType: 'text/html'
-      )
-    }
-  }
 }
