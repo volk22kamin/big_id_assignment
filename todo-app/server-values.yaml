@@ -38,7 +38,10 @@ service:
 env: 
   variables:
   - name: MONGODB_URI
-    value: mongodb://todo-app-db-green:27017/todoapp
+    valueFrom:
+      secretKeyRef:
+        name: mongo-app
+        key: MONGODB_URI
 
 
 

@@ -21,7 +21,7 @@ livenessProbe:
     command:
       - sh
       - -c
-      - 'mongosh --quiet --eval "db.adminCommand({ ping: 1 }).ok" 2>/dev/null | grep 1 || mongo --quiet --eval "db.adminCommand({ ping: 1 }).ok" | grep 1'
+      - 'mongosh -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --quiet --eval "db.adminCommand({ ping: 1 }).ok" 2>/dev/null | grep 1 || mongo -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --quiet --eval "db.adminCommand({ ping: 1 }).ok" | grep 1'
   initialDelaySeconds: 15
   periodSeconds: 10
 
@@ -30,7 +30,9 @@ service:
   port: 27017
   type: ClusterIP
 
-env: null
+envFrom:
+  - secretRef:
+      name: mongo-root
   
 
 networkPolicy:

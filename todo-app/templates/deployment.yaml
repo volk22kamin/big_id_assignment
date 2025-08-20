@@ -49,12 +49,21 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ .Values.service.portName }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.env }}
           {{- with .variables }}
           env:
           {{- range . }}
           - name: {{ .name }}
+            {{- if hasKey . "valueFrom" }}
+            valueFrom:
+              {{- toYaml .valueFrom | nindent 14 }}
+            {{- else }}
             value: {{ .value | quote }}
+            {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
