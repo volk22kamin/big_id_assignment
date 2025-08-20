@@ -42,5 +42,13 @@ pipeline {
                 }
             }
         }
+        stage("Deploy") {
+            when {
+                branch 'main'
+            }
+            steps {
+                build job: 'CD', parameters: [string(name: 'BRANCH_NAME', value: 'main'), string(name: 'APP_TO_DEPLOY', value: 'server')]
+            }
+        }
     }
 }
