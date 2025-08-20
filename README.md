@@ -72,4 +72,25 @@ Notes:
   - Parameterized with `APP_TO_DEPLOY` (`client`, `server`, `mongodb`) and `BRANCH_NAME`.
   - Performs `helm upgrade --install` using the app-specific values file to deploy the selected component.
 
+### Jenkins notifications and triggers
+- **Email notifications**: Configured Jenkins mail step (Mailer plugin) to send build status emails to Gmail on success/failure (see `post { success { mail ... } failure { mail ... } }` in CI Jenkinsfiles).
+- **GitHub webhooks**: Repository webhooks trigger Jenkins builds on each commit.
+- **Path-based triggers**: Jobs are configured so that only changes under `server/**` trigger the Server CI pipeline and only changes under `client/**` trigger the Client CI pipeline (e.g., with Included Regions/when-changes filtering).
+
+### Jenkins installation
+- Installed Jenkins via Helm chart with custom overrides for pod templates used by the pipelines:
+
+```bash
+helm repo add jenkinsci https://charts.jenkins.io
+helm repo update
+helm install my-jenkins jenkinsci/jenkins --version 5.8.79 -f my-jenkins-values.yaml
+```
+
+The custom values file configures the required Kubernetes pod templates (Kaniko, Node, k8s-tools) for the pipelines.
+
+### Manual steps required
+- Image tags for deployment are set manually in the corresponding app values files (`todo-app/client-values.yaml`, `todo-app/server-values.yaml`, `todo-app/mongodb-values.yaml`).
+- After deploying the server, copy the Service IP and paste it into the client values as the API URL so the client points to the server.
+  - (A better approach is to use a DNS name for the server to keep a stable endpoint for the client, but to avoid costs this setup uses the raw IP.)
+
 
