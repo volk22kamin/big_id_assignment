@@ -25,7 +25,7 @@ livenessProbe:
   command:
     - sh
     - -c
-    - mongosh --quiet --eval "db.adminCommand({ ping: 1 }).ok" 2>/dev/null | grep 1 || mongo --quiet --eval "db.adminCommand({ ping: 1 }).ok" | grep 1
+    - 'mongosh --quiet --eval "db.adminCommand({ ping: 1 }).ok" 2>/dev/null | grep 1 || mongo --quiet --eval "db.adminCommand({ ping: 1 }).ok" | grep 1'
   initialDelaySeconds: 15
   periodSeconds: 10
 
