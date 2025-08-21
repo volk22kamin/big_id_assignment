@@ -90,7 +90,7 @@ Notes:
   - On `main`, triggers the CD job, passing the target app parameter.
 
 - **Server CI** (`server/Jenkinsfile`):
-  - Installs dependencies and runs tests.
+  - Installs dependencies and runs tests with local mongo DB.
   - Builds and pushes the server image with Kaniko.
 
 - **CD (generic)** (`Jenkinsfile.deploy`):
