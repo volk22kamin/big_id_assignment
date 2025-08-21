@@ -25,7 +25,7 @@ spec:
       labels:
         appName: {{ .Values.selector.appName }}-{{ .Values.environment }}
     spec:
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: { .Values.terminationGracePeriodSeconds }
       imagePullSecrets:
         - name: {{ .Values.imagePullSecret }}
       containers:
