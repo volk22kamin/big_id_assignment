@@ -154,3 +154,18 @@ The chart automatically:
 - Sets up persistent volume claims with the specified storage class
 - Mounts the persistent volume to `/data/db`
 - Maintains the same service endpoints for client/server connectivity
+
+
+## Future Considerations
+
+- **Helm Chart Values / Loops**  
+  Currently, environment variables, volumes, and other pod settings are defined explicitly. In a larger chart, it’s recommended to:
+  - Iterate (`range`) over `.Values.envs` for environment variables.  
+  - Iterate (`range`) over `.Values.volumes` and `.Values.volumeMounts`.  
+  - This ensures new items can be added without modifying templates, making the chart more robust and maintainable.
+
+- **DNS & Service Discovery**  
+  For now, the client requires manual updates of the server’s Service IP. Future-proofing:
+  - Can use Route53 or any other dns provider.
+  - deploy LB.
+
